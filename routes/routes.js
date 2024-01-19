@@ -107,6 +107,18 @@ router.get("/userDelete", async (req, res) => {
   await User.updateOne({ ref_id: req.query._id }, { status: false });
   res.render("login");
 });
+router.get("/userBlock", async (req, res) => {
+  let value;
+  const userDetails = await UserDetails.find({ _id: req.query._id });
+  if (userDetails[0].block) {
+    value = false;
+  } else {
+    value = true;
+  }
+
+  await UserDetails.updateOne({ _id: req.query._id }, { block: value });
+  res.render("login");
+});
 
 router.get("/userUpdate", async (req, res) => {
   res.render("updateUser");

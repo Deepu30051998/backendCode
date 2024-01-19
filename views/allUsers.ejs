@@ -29,8 +29,17 @@
             <td><%= user.address?.city  %> <%= user.address?.district  %> <%= user.address?.state  %> <%= user.address?.country  %></td>
             <td><%= user.phone_no.phone_no %></td>
             <td><a href="/userDelete?_id=<%= user._id %>" >Delete</a></td>
+            <td>
+                <% if (user.block == true) { %>
+                   <a href="/userBlock?_id=<%= user._id %>">Block</a>
+                <% } else { %>
+                    <a href="/userBlock?_id=<%= user._id %>">Unblock</a>
+                <% } %>
+              </td>
+              
             
-            <td></td>
+            
+            
         </tr>
         <% }) %>
         </table>
