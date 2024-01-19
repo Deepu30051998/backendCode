@@ -24,9 +24,7 @@ const userSchema = new mongoose.Schema(
   );
   const userDetailsSchema = new mongoose.Schema(
     {
-      status: {
-        type: Boolean
-      },
+      
       email: {
         type: String,
       },

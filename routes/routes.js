@@ -47,7 +47,6 @@ router.post("/user", async (req, res) => {
       state: body.state,
       country: body.country,
     },
-    status: true,
   });
 
   await User.create({
@@ -106,8 +105,6 @@ router.post("/update", async (req, res) => {
 
 router.get("/userDelete", async (req, res) => {
   await User.updateOne({ ref_id: req.query._id }, { status: false });
-
-  await UserDetails.updateOne({ _id: req.query._id }, { status: false });
   res.render("login");
 });
 
@@ -116,30 +113,41 @@ router.get("/userUpdate", async (req, res) => {
 });
 
 router.get("/users", async (req, res) => {
-  const data = await UserDetails.find({ status: true });
+  const dataUserDetails = await UserDetails.find();
+  const dataUser = await User.find({ status: true });
+  const data = dataUser.map((userDetails) => {
+    return dataUserDetails.find((user) => user._id.equals(userDetails.ref_id));
+  });
+
   res.render("usersList", { data: data });
 });
 router.get("/allUsers", async (req, res) => {
-  const userDetailsData= await UserDetails.find({ status: true });
-  const userPhoneNoData = await User.find({status:true})
+  const userPhoneNoData = await User.find({ status: true });
 
-  const Data = userDetailsData.map(userDetails => {
-    const matchingUser = userPhoneNoData.find(user => user.ref_id.equals(userDetails._id));
+  const dataUserDetails = await UserDetails.find();
+
+  const data = userPhoneNoData.map((userDetails) => {
+    return dataUserDetails.find((user) => user._id.equals(userDetails.ref_id));
+  });
+
+  const Data = data.map((userDetails) => {
+    const matchingUser = userPhoneNoData.find((user) =>
+      user.ref_id.equals(userDetails._id)
+    );
     return {
-      ...userDetails.toObject(),  
-      phone_no: matchingUser ,
+      ...userDetails.toObject(),
+      phone_no: matchingUser,
     };
   });
 
-  res.render("allUsers", { data: Data  });
+  res.render("allUsers", { data: Data });
 });
 
 router.get("/showByPhoneNo", async (req, res) => {
-  const val = await User.find({ phone_no: req.query.phone_no });
+  const val = await User.find({ phone_no: req.query.phone_no, status: true });
 
   const data = await UserDetails.find({
     _id: val[0].ref_id,
-    status: true,
   });
   res.render("usersList", { data: data });
 });
