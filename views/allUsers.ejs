@@ -19,7 +19,7 @@
     </style>
     <body>
         <%- include('../partials/nav');%>
-        <table><tr><th>D.O.B</th><th>Email</th><th>Address</th></tr>
+        <table><tr><th>D.O.B</th><th>Email</th><th>Address</th><th>Phone no</th><th>Delete</th><th>Action</th></tr>
         <% data.forEach(user => { %>
          
          <tr>
@@ -27,6 +27,9 @@
             <td><%= user.DOB  %></td>
             <td><%= user.email  %></td>
             <td><%= user.address?.city  %> <%= user.address?.district  %> <%= user.address?.state  %> <%= user.address?.country  %></td>
+            <td><%= user.phone_no.phone_no %></td>
+            <td><a href="/userDelete?_id=<%= user._id %>" >Delete</a></td>
+            <td></td>
         </tr>
         <% }) %>
         </table>

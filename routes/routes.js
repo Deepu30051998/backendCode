@@ -120,9 +120,20 @@ router.get("/users", async (req, res) => {
   res.render("usersList", { data: data });
 });
 router.get("/allUsers", async (req, res) => {
-  const data = await UserDetails.find({ status: true });
-  res.render("allUsers", { data: data });
+  const userDetailsData= await UserDetails.find({ status: true });
+  const userPhoneNoData = await User.find({status:true})
+
+  const Data = userDetailsData.map(userDetails => {
+    const matchingUser = userPhoneNoData.find(user => user.ref_id.equals(userDetails._id));
+    return {
+      ...userDetails.toObject(),  
+      phone_no: matchingUser ,
+    };
+  });
+
+  res.render("allUsers", { data: Data  });
 });
+
 router.get("/showByPhoneNo", async (req, res) => {
   const val = await User.find({ phone_no: req.query.phone_no });
 
