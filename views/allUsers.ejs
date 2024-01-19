@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <style>
+    table,td,th{
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    table{
+        margin: 15px;
+    }    
+    th,td{
+        padding: 5px;
+    }
+    </style>
+    <body>
+        <%- include('../partials/nav');%>
+        <table><tr><th>D.O.B</th><th>Email</th><th>Address</th></tr>
+        <% data.forEach(user => { %>
+         
+         <tr>
+            
+            <td><%= user.DOB  %></td>
+            <td><%= user.email  %></td>
+            <td><%= user.address?.city  %> <%= user.address?.district  %> <%= user.address?.state  %> <%= user.address?.country  %></td>
+        </tr>
+        <% }) %>
+        </table>
+    </body>
+    </html>

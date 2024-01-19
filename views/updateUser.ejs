@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+#form{
+    
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: bisque;
+    
+}
+#state , #city , #town , #country{
+    position: absolute;
+    left:230px;
+    height: 12px;
+   
+}
+
+</style>
+<body>
+    <%- include('../partials/nav');%>
+    <div id="form">
+        
+            
+        
+        <h3>Update User</h3>
+        <form action="/update" method="post">
+            <label for="pnumber">Old Phone number</label><br>
+            <input type="text" id="pnumber" name="pnumber"  required><br>
+            <label for="pnnumber">New Phone number</label><br>
+            <input type="text" id="pnnumber" name="pnnumber" ><br>
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="email"><br>
+            <label for="dob">Date of Birth</label><br>
+            <input type="text" id="dob" name="dob"><br><br>
+            <label for="address">Address</label>
+            <h6>If you want to update address then update full address</h6>
+            
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" ><br>
+            
+            <label for="district">District</label>
+            <input type="text" id="state" name="district" ><br>
+            
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" ><br>
+            
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" ><br><br>
+            
+            <label for="pass">Password</label><br>
+            <input type="text" id="pass" name="pass">
+            <input type="submit" id="btn" value="Submit">
+          </form>
+        </div>
+    
+</body>
+</html>

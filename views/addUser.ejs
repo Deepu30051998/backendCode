@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+#form{
+    
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: bisque;
+    
+}
+#state , #city , #town , #country{
+    position: absolute;
+    left:230px;
+    height: 12px;
+   
+}
+
+</style>
+<body>
+    <%- include('../partials/nav');%>
+    <div id="form">
+        
+            <h2>  User does not exist !</h2>
+        
+        <h3>Create New User</h3>
+        <form action="/user" method="post">
+            <label for="pnumber">Phone number</label><br>
+            <input type="text" id="pnumber" name="pnumber" required><br>
+            <label for="email">Email</label><br>
+            <input type="text" id="email" name="email" required><br>
+            <label for="dob">Date of Birth</label><br>
+            <input type="text" id="dob" name="dob" required><br>
+            <label for="address">Address</label><br>
+            
+            
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required><br>
+            
+            <label for="district">District</label>
+            <input type="text" id="state" name="district" required><br>
+            
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" required><br>
+            
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" required><br>
+
+            <label for="pass">Password</label><br>
+            <input type="text" id="pass" name="pass" required>
+            <input type="submit" id="btn" value="Submit">
+          </form>
+        </div>
+    
+</body>
+</html>

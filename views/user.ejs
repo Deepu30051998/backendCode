@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    #btns{
+      height: 20px;
+    width: 45px;
+    background-color: rgb(153, 226, 221);
+    padding: 5px;
+    color: black;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 6px 5px;
+    }
+  </style>
+
+  <body>
+    <%- include('../partials/nav');%>
+
+    <ul>
+        <% userData.forEach(user => { %>
+            <li>Email - <%= user.email  %></li>
+            <li>Date of Birth -<%= user.DOB  %></li>
+            <li>Address - <%= user.address?.district  %><%= user.address?.city  %><%= user.address?.state  %><%= user.address?.country  %></li>
+            <div id="btns"><a href="/userDelete?_id=<%= user._id %>" style="text-decoration: none;color: black;">Delete</a></div> 
+            <div id="btns"><a href="/userUpdate?_id=<%= user._id %>" style="text-decoration: none;color: black;">Update</a></div> 
+        <% }) %>
+    
+    
+  </ul>
+    
+  
+  </body>
+</html>
