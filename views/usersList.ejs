@@ -12,7 +12,9 @@
         <%- include('../partials/nav');%>
         <ul>
         <% data.forEach(user => { %>
-         <li><%= user.email  %></li>
+         <li><%= user.order[0].email  %></li>
+         <li><%= user.order[0].DOB  %></li>
+         <li><%= user.order[0].address.city   %></li>
         <% }) %>
     </ul>
     </body>

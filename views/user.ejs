@@ -24,9 +24,9 @@
 
     <ul>
         <% userData.forEach(user => { %>
-            <li>Email - <%= user.email  %></li>
-            <li>Date of Birth -<%= user.DOB  %></li>
-            <li>Address - <%= user.address?.district  %><%= user.address?.city  %><%= user.address?.state  %><%= user.address?.country  %></li>
+            <li>Email - <%= user.order[0].email  %></li>
+            <li>Date of Birth -<%= user.order[0].DOB  %></li>
+            <li>Address - <%= user.order[0].address?.district  %> <%= user.order[0].address?.city  %> <%= user.order[0].address?.state  %> <%= user.order[0].address?.country  %></li>
             <div id="btns"><a href="/userDelete?_id=<%= user._id %>" style="text-decoration: none;color: black;">Delete</a></div> 
             <div id="btns"><a href="/userUpdate?_id=<%= user._id %>" style="text-decoration: none;color: black;">Update</a></div> 
         <% }) %>

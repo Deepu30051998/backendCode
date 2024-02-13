@@ -1,23 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const { User, UserDetails } = require("../models/usersData");
+const { User } = require("../models/usersData");
+
+const {
+  loginUser,
+  addUser,
+  postUser,
+  update,
+  deleteUser,
+  blockUser,
+  Update,
+  allUser,
+  showPhone,
+} = require("../controllers/userController");
 
 const bodyParser = require("body-parser");
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-router.get("/", (req, res) => {
-  res.render("login");
-});
+router.get("/", loginUser);
 
 async function user(req, res, next) {
   const userPhone = req.query.pnumber;
   const userPass = req.query.pass;
 
   const userFound = await User.findOne({
-    phone_no: { $eq: userPhone },
-    pass: { $eq: userPass },
+    phone_no: userPhone,
+    pass: userPass,
     status: true,
   });
 
@@ -28,140 +38,20 @@ async function user(req, res, next) {
   }
 }
 
-router.get("/user", user, async (req, res) => {
-  const userLogged = req.query.pnumber;
-  const detail = await User.find({ phone_no: userLogged });
+router.get("/user", user, addUser);
 
-  const details = await UserDetails.find({ _id: detail[0].ref_id });
-  res.render("user", { userData: details });
-});
+router.post("/user", postUser);
 
-router.post("/user", async (req, res) => {
-  const body = req.body;
-  const user = await UserDetails.create({
-    email: body.email,
-    DOB: body.dob,
-    address: {
-      city: body.city,
-      district: body.district,
-      state: body.state,
-      country: body.country,
-    },
-  });
+router.post("/update", update);
 
-  await User.create({
-    phone_no: body.pnumber,
-    pass: body.pass,
-    status: true,
-    ref_id: user._id,
-  });
+router.get("/userDelete", deleteUser);
 
-  res.render("login");
-});
+router.get("/userBlock", blockUser);
 
-router.post("/update", async (req, res) => {
-  const body = req.body;
-  const filter = { phone_no: body.pnumber };
-  const userdata = await User.find({ phone_no: body.pnumber });
-  const data = userdata[0];
+router.get("/userUpdate", Update);
 
-  const updateFields = {};
-  const updateUser = {};
+router.get("/allUsers", allUser);
 
-  if (body.email !== undefined && body.email !== "") {
-    updateFields.email = body.email;
-  }
-
-  if (body.dob !== undefined && body.dob !== "") {
-    updateFields.DOB = body.dob;
-  }
-
-  if (body.city !== undefined && body.city !== "") {
-    updateFields["address.city"] = body.city;
-  }
-  if (body.district !== undefined && body.district !== "") {
-    updateFields["address.district"] = body.district;
-  }
-  if (body.country !== undefined && body.country !== "") {
-    updateFields["address.country"] = body.country;
-  }
-  if (body.state !== undefined && body.state !== "") {
-    updateFields["address.state"] = body.state;
-  }
-
-  if (body.pass !== undefined && body.pass !== "") {
-    updateUser.pass = body.pass;
-  }
-  if (body.pnnumber !== undefined && body.pnnumber !== "") {
-    updateUser.phone_no = body.pnnumber;
-  }
-
-  await UserDetails.updateOne({ _id: data.ref_id }, { $set: updateFields });
-
-  await User.updateOne(filter, { $set: updateUser });
-
-  res.render("login");
-});
-
-router.get("/userDelete", async (req, res) => {
-  await User.updateOne({ ref_id: req.query._id }, { status: false });
-  res.render("login");
-});
-router.get("/userBlock", async (req, res) => {
-  let value;
-  const userDetails = await UserDetails.find({ _id: req.query._id });
-  if (userDetails[0].block) {
-    value = false;
-  } else {
-    value = true;
-  }
-
-  await UserDetails.updateOne({ _id: req.query._id }, { block: value });
-  res.render("login");
-});
-
-router.get("/userUpdate", async (req, res) => {
-  res.render("updateUser");
-});
-
-router.get("/users", async (req, res) => {
-  const dataUserDetails = await UserDetails.find();
-  const dataUser = await User.find({ status: true });
-  const data = dataUser.map((userDetails) => {
-    return dataUserDetails.find((user) => user._id.equals(userDetails.ref_id));
-  });
-
-  res.render("usersList", { data: data });
-});
-router.get("/allUsers", async (req, res) => {
-  const userPhoneNoData = await User.find({ status: true });
-
-  const dataUserDetails = await UserDetails.find();
-
-  const data = userPhoneNoData.map((userDetails) => {
-    return dataUserDetails.find((user) => user._id.equals(userDetails.ref_id));
-  });
-
-  const Data = data.map((userDetails) => {
-    const matchingUser = userPhoneNoData.find((user) =>
-      user.ref_id.equals(userDetails._id)
-    );
-    return {
-      ...userDetails.toObject(),
-      phone_no: matchingUser,
-    };
-  });
-
-  res.render("allUsers", { data: Data });
-});
-
-router.get("/showByPhoneNo", async (req, res) => {
-  const val = await User.find({ phone_no: req.query.phone_no, status: true });
-
-  const data = await UserDetails.find({
-    _id: val[0].ref_id,
-  });
-  res.render("usersList", { data: data });
-});
+router.get("/showByPhoneNo", showPhone);
 
 module.exports = router;
