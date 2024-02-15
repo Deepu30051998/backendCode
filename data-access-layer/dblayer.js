@@ -46,7 +46,7 @@ async function findUserBy(pnum) {
   return data;
 }
 
-async function blockuser(id , value) {
+async function blockuser(id, value) {
   UserDetails.updateOne({ _id: id }, { block: value });
 }
 
