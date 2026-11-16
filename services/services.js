@@ -2,7 +2,6 @@ const {
   findUser,
   createUser,
   createUserDetails,
-  findUser,
   blockuser,
   showUsers,
   showPhone,
