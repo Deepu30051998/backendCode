@@ -1,10 +1,11 @@
 {
-  "name": "task15",
+  "name": "User Management System",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,9 @@
     "express-async-handler": "^1.2.0",
     "mongoose": "^8.0.4",
     "nodemon": "^3.0.2"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.10.1"
   }
 }
