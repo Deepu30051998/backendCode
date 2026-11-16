@@ -5,7 +5,6 @@ const { MongoDBManager } = require("./db-layer/MongoDBManager");
 const { DBManagerFactory } = require("./db-layer/DataAccessLayerFactory");
 const { ServiceFactory } = require("./service-layer/ServiceFactory");
 
-// DB Manager imports
 const { MongoUserDBManager } = require("./db-layer/implementations/MongoUserDBManager");
 
 // Service imports
