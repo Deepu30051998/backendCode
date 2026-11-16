@@ -3,6 +3,7 @@
 > A full-stack MVC application built with Node.js, Express, MongoDB, and EJS for user onboarding, search, and account management.
 
 ![Node.js](https://img.shields.io/badge/Node.js-18+-43853D?style=flat&logo=node.js&logoColor=white)
+![Architecture](https://img.shields.io/badge/Architecture-3--Layer-blue?style=flat)
 ![Express.js](https://img.shields.io/badge/Express.js-4.x-000000?style=flat&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat&logo=mongodb&logoColor=white)
 ![EJS](https://img.shields.io/badge/View_Engine-EJS-B4CA65?style=flat)
@@ -11,7 +12,7 @@
 
 ## 📌 Overview
 
-The **User Management System** is a modular web application designed to handle customer registration, profile lookups, account status updates, and lifecycle management. It employs a **Layered Architecture** (Routes &rarr; Controllers &rarr; Services &rarr; Data Access Layer &rarr; Models) to ensure clean separation of concerns, maintainability, and scalability.
+The **User Management System** is a modular web application designed to handle customer registration, profile lookups, account status updates, and lifecycle management. It strictly adheres to the **3-Layer Architecture pattern** (`Web Layer → Service Layer → DB Layer`) using singleton configuration, static registry factories (`ServiceFactory`, `DBManagerFactory`), abstract interfaces, encapsulated domain models, and request/response DTOs.
 
 ---
 
@@ -28,48 +29,75 @@ The **User Management System** is a modular web application designed to handle c
 
 ## 🏗️ Architecture & Project Structure
 
-The project follows a clean layered separation pattern inside the `src/` directory:
+The project follows the strict 3-Layer Architecture specified in `fdf/.agents`:
 
 ```text
-backendCode/
-├── package.json               # Dependencies and scripts
-├── README.md                  # Project documentation
-└── src/
-    ├── server.js              # Application entry point & server initialization
-    ├── connection.js          # MongoDB Mongoose database connection
-    ├── controllers/           # HTTP request handlers & view rendering
-    │   └── userController.js
-    ├── data-access-layer/     # Database queries, aggregates & CRUD operations
-    │   └── dblayer.js
-    ├── models/                # Mongoose schemas (User & UserDetails)
-    │   └── usersData.js
-    ├── partials/              # Reusable EJS components (Navigation bar)
-    │   └── nav.ejs
-    ├── routes/                # Express routing definitions
-    │   └── routes.js
-    ├── services/              # Business logic layer
-    │   └── services.js
-    └── views/                 # EJS UI templates
-        ├── addUser.ejs        # User registration form
-        ├── allUsers.ejs       # All active customers list
-        ├── login.ejs          # User login screen
-        ├── updateUser.ejs     # Update user credentials & address
-        ├── user.ejs           # Single user profile view
-        └── usersList.ejs      # Search results view
+src/
+├── server.js                        # Bootstrap & HTTP server listener
+├── app.js                           # Composition root (wires DB, factories, routes)
+├── logs.js                          # Unified application logger
+├── config/
+│   ├── Config.js                    # Singleton config (reads active environment)
+│   ├── development.js               # Dev environment configuration
+│   └── production.js                # Prod environment configuration
+├── common/
+│   └── utils/
+│       ├── Constants.js             # Global constants & enums
+│       └── Utility.js               # Helper utility functions
+├── web-layer/
+│   ├── controllers/
+│   │   └── UserController.js        # Controller route handlers & view rendering
+│   ├── middlewares/
+│   │   ├── AuthorizationMiddleware.js
+│   │   └── ErrorHandler.js          # Central error handling middleware
+│   └── models/
+│       ├── request/
+│       │   ├── CreateUserRequest.js # Request DTO for registration
+│       │   └── UpdateUserRequest.js # Request DTO for updates
+│       └── response/
+│           └── UserResponse.js      # Response DTO (safe for views & JSON)
+├── service-layer/
+│   ├── ServiceFactory.js            # Registry factory for business services
+│   ├── interfaces/
+│   │   └── IUserService.js          # Service layer contract
+│   ├── implementations/
+│   │   └── UserService.js           # Domain business logic implementation
+│   └── models/
+│       └── User.js                  # Domain model with private fields & getters
+├── db-layer/
+│   ├── DataAccessLayerFactory.js    # Registry factory for DB managers
+│   ├── MongoDBManager.js            # MongoDB Mongoose connection manager
+│   ├── interfaces/
+│   │   └── IUserDBManager.js        # Database manager contract
+│   ├── implementations/
+│   │   └── MongoUserDBManager.js    # Mongo DB implementation (maps docs to domain model)
+│   └── schemas/
+│       └── UserSchema.js            # Mongoose schemas (User & UserDetails)
+├── partials/                        # Reusable EJS components (Navigation bar)
+│   └── nav.ejs
+└── views/                           # EJS UI templates
+    ├── addUser.ejs                  # User registration form
+    ├── allUsers.ejs                 # All active customers list
+    ├── login.ejs                    # User login screen
+    ├── updateUser.ejs               # Update user credentials & address
+    ├── user.ejs                     # Single user profile view
+    └── usersList.ejs                # Search results view
 ```
 
-### Layer Flow:
-1. **Routes (`src/routes/`)**: Receives incoming requests and routes them to the appropriate controller.
-2. **Controllers (`src/controllers/`)**: Parses input, invokes business services, and renders EJS views.
-3. **Services (`src/services/`)**: Orchestrates business rules, data preparation, and status checks.
-4. **Data Access Layer (`src/data-access-layer/`)**: Executes database queries, aggregations (`$match`, `$lookup`), and updates.
-5. **Models (`src/models/`)**: Defines the relational schemas between `User` and `UserDetails`.
+### Layer Rules:
+```
+Web Layer  →  Service Layer  →  DB Layer
+```
+1. **Web Layer**: Talks **only** to the Service Layer via `ServiceFactory.getUserService()`. Uses Request DTOs to parse input and maps domain models to `UserResponse`.
+2. **Service Layer**: Talks **only** to the DB Layer via `DBManagerFactory.getUserDBManager()`. Operates strictly on domain model `User` with private fields.
+3. **DB Layer**: Executes MongoDB queries and aggregations. Converted via `#toModel()` to return domain model instances—never leaks raw Mongoose documents.
+4. **App Composition Root (`app.js`)**: The only file that instantiates DB managers and services, registering them into `DBManagerFactory` and `ServiceFactory`.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Runtime Environment**: [Node.js](https://nodejs.org/)
+- **Runtime Environment**: [Node.js](https://nodejs.org/) (CommonJS, Node 18+)
 - **Web Framework**: [Express.js](https://expressjs.com/)
 - **Database & ODM**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
 - **View Engine**: [EJS (Embedded JavaScript Templates)](https://ejs.co/)
@@ -100,7 +128,7 @@ npm install
 
 ### 3. Database & Environment Configuration
 
-The application connects to MongoDB using the connection utility in `src/connection.js`.
+The application connects to MongoDB using `MongoDBManager` in `src/db-layer/MongoDBManager.js` driven by `Config`.
 
 - **Default Database**: `mongodb://127.0.0.1:27017/task15`
 - **Default Port**: `7500`
