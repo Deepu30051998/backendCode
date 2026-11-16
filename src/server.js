@@ -1,18 +1,12 @@
-const path = require("path");
-const express = require("express");
-const app = express();
-const mainRouter = require("./routes/routes");
-const { connectMongoDB } = require("./connection");
+const { App } = require("./app");
+const { Config } = require("./config/Config");
+const { logger } = require("./logs");
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-connectMongoDB("mongodb://127.0.0.1:27017/task15");
-app.use(mainRouter);
-
-const PORT = process.env.PORT || 7500;
-
-app.listen(PORT, () => {
-  console.log(`Listening at PORT ${PORT}`);
-});
-
+try {
+  const { app } = new App();
+  const port = Config.getInstance().getPort();
+  app.listen(port, () => logger.info(`Express server listening on port ${port}`));
+} catch (err) {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+}

@@ -1,8 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const { User } = require("../models/usersData");
-
-const {
+import express from "express";
+import bodyParser from "body-parser";
+import { User } from "../db-layer/models/DBUser.js";
+import {
   loginUser,
   addUser,
   postUser,
@@ -12,9 +11,9 @@ const {
   Update,
   allUser,
   showPhone,
-} = require("../controllers/userController");
+} from "./controllers/UserController.js";
 
-const bodyParser = require("body-parser");
+const router = express.Router();
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -39,19 +38,12 @@ async function user(req, res, next) {
 }
 
 router.get("/user", user, addUser);
-
 router.post("/user", postUser);
-
 router.post("/update", update);
-
 router.get("/userDelete", deleteUser);
-
 router.get("/userBlock", blockUser);
-
 router.get("/userUpdate", Update);
-
 router.get("/allUsers", allUser);
-
 router.get("/showByPhoneNo", showPhone);
 
-module.exports = router;
+export default router;
