@@ -1,38 +1,38 @@
-import { ObjectStatus } from 'service-layer/models/ObjectStatus';
-import { User } from '../../../service-layer/models/User';
+import { ObjectStatus } from 'service-layer/models/ObjectStatus'
+import { User } from '../../../service-layer/models/User'
 
 export class UserResponse {
-  public id: string | null;
-  public _id: string | null;
-  public phone: string;
-  public phone_no: string;
-  public status: boolean;
-  public refId: string | null;
-  public email?: string;
-  public dob?: string;
+  public id: string | null
+  public _id: string | null
+  public phone: string
+  public phone_no: string
+  public status: boolean
+  public refId: string | null
+  public email?: string
+  public dob?: string
   public address: {
-    city?: string;
-    district?: string;
-    state?: string;
-    country?: string;
-  };
-  public block: boolean;
-  public createdAt?: Date;
-  public updatedAt?: Date;
-  public order?: Array<any>;
+    city?: string
+    district?: string
+    state?: string
+    country?: string
+  }
+  public block: boolean
+  public createdAt?: Date
+  public updatedAt?: Date
+  public order?: Array<any>
 
   constructor(user: User) {
-    if (!user) return;
-    this.id = user.getId();
-    this._id = user.getRefId() || user.getId();
-    this.phone = user.getPhoneNumber();
-    this.phone_no = user.getPhoneNumber();
-    this.status = user.getStatus() == ObjectStatus.Active ? true : false;
-    this.refId = user.getRefId();
-    this.email = user.getEmail();
-    this.dob = user.getDob();
+    if (!user) return
+    this.id = user.getId()
+    this._id = user.getRefId() || user.getId()
+    this.phone = user.getPhoneNumber()
+    this.phone_no = user.getPhoneNumber()
+    this.status = user.getStatus() == ObjectStatus.Active ? true : false
+    this.refId = user.getRefId()
+    this.email = user.getEmail()
+    this.dob = user.getDob()
 
-    const addr = user.getAddress();
+    const addr = user.getAddress()
     this.address = addr
       ? {
         city: typeof addr.getCity === 'function' ? addr.getCity() : (addr as any).city,
@@ -40,11 +40,11 @@ export class UserResponse {
         state: typeof addr.getState === 'function' ? addr.getState() : (addr as any).state,
         country: typeof addr.getCountry === 'function' ? addr.getCountry() : (addr as any).country,
       }
-      : {};
+      : {}
 
-    this.block = user.getBlock();
-    this.createdAt = user.getCreatedAt();
-    this.updatedAt = user.getLastModifiedAt();
+    this.block = user.getBlock()
+    this.createdAt = user.getCreatedAt()
+    this.updatedAt = user.getLastModifiedAt()
 
     // Backward-compatibility for EJS views
     this.order = [
@@ -55,6 +55,6 @@ export class UserResponse {
         block: this.block,
         address: this.address,
       },
-    ];
+    ]
   }
 }

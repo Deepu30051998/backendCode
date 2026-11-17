@@ -4,6 +4,7 @@ import { ServiceObject } from "service-layer/models/ServiceObject";
 import { ObjectStatus } from "service-layer/models/ObjectStatus";
 
 export class Utility {
+
   public static getUser(userDoc: any, detailsDoc: any = null): User {
     if (!userDoc) return null as any;
     const details = detailsDoc || (userDoc.userdetails && userDoc.userdetails[0]) || {}
@@ -18,7 +19,7 @@ export class Utility {
     if (details.address) {
       model.setAddress(Utility.getAddress(details.address))
     }
-    Utility.setServiceObjectProperties(model,details)
+    Utility.setServiceObjectProperties(model, details)
     return model
   }
 

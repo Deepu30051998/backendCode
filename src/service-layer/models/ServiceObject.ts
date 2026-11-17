@@ -1,51 +1,51 @@
-import { ObjectStatus } from "./ObjectStatus";
+import { ObjectStatus } from "./ObjectStatus"
 
 export class ServiceObject {
-    private id: string;
-    private createdAt: Date;
-    private lastModifiedAt: Date;
-    protected updatedAt: Date;
-    private enable: boolean;
-    private status: ObjectStatus;
+    private id: string
+    private createdAt: Date
+    private lastModifiedAt: Date
+    protected updatedAt: Date
+    private enable: boolean
+    private status: ObjectStatus
 
     public getStatus(): ObjectStatus {
-        return this.status;
+        return this.status
     }
 
     public setStatus(status: ObjectStatus): void {
-        this.status = status;
+        this.status = status
     }
 
     public isEnable(): boolean {
-        return this.enable;
+        return this.enable
     }
 
     public setEnable(enable: boolean): void {
-        this.enable = enable;
+        this.enable = enable
     }
 
     public getId(): string {
-        return this.id;
+        return this.id
     }
 
     public setId(id: string): void {
-        this.id = id;
+        this.id = id
     }
 
     public getCreatedAt(): Date {
-        return this.createdAt;
+        return this.createdAt
     }
 
     public setCreatedAt(createdAt: Date): void {
-        this.createdAt = createdAt;
+        this.createdAt = createdAt
     }
 
     public getLastModifiedAt(): Date {
-        return this.lastModifiedAt;
+        return this.lastModifiedAt
     }
 
     public setLastModifiedAt(lastModifiedAt: Date): void {
-        this.lastModifiedAt = lastModifiedAt;
-        this.updatedAt = lastModifiedAt;
+        this.lastModifiedAt = lastModifiedAt
+        this.updatedAt = lastModifiedAt
     }
 }
