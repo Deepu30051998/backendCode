@@ -1,13 +1,13 @@
-import { IUserDBManager } from './interfaces/IUserDBManager';
+import { IUserDBManager } from './interfaces/IUserDBManager'
 
 export class DataAccessLayerFactory {
-  private static userDBManager: IUserDBManager;
+  private static userDBManager: IUserDBManager
 
   public static getUserDBManager(): IUserDBManager {
-    return this.userDBManager;
+    return this.userDBManager
   }
 
   public static setUserDBManager(mgr: IUserDBManager): void {
-    this.userDBManager = mgr;
+    this.userDBManager = mgr
   }
 }

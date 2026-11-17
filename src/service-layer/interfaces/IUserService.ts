@@ -7,6 +7,6 @@ export interface IUserService {
   getAllUsers(): Promise<User[]>;
   registerUser(request: any): Promise<User>;
   updateUser(request: any): Promise<boolean>;
-  deleteUser(refId: string): Promise<any>;
+  deleteUser(refId: string): Promise<boolean>;
   toggleBlockUser(refId: string): Promise<boolean | null>;
 }

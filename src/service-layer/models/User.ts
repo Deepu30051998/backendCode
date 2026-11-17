@@ -1,103 +1,110 @@
-export interface IUserData {
-  id?: string | null;
-  phone: string;
-  pass?: string;
-  status?: boolean;
-  refId?: string | null;
-  email?: string;
-  dob?: string;
-  address?: {
-    city?: string;
-    district?: string;
-    state?: string;
-    country?: string;
-  };
-  block?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+import { ServiceObject } from "./ServiceObject";
+
+export class Address {
+  private city: string;
+  private district: string;
+  private state: string;
+  private country: string;
+
+  public getCity(): string {
+    return this.city;
+  }
+
+  public setCity(city: string): void {
+    this.city = city;
+  }
+
+  public getDistrict(): string {
+    return this.district;
+  }
+
+  public setDistrict(district: string): void {
+    this.district = district;
+  }
+
+  public getState(): string {
+    return this.state;
+  }
+
+  public setState(state: string): void {
+    this.state = state;
+  }
+
+  public getCountry(): string {
+    return this.country;
+  }
+
+  public setCountry(country: string): void {
+    this.country = country;
+  }
 }
 
-export class User {
-  private id: string | null;
-  private phone: string;
-  private pass?: string;
-  private status: boolean;
-  private refId: string | null;
-  private email?: string;
-  private dob?: string;
-  private address: {
-    city?: string;
-    district?: string;
-    state?: string;
-    country?: string;
-  };
+export class User extends ServiceObject{
+  private phoneNumber: string;
+  private password: string;
+  private refId: string;
+  private email: string;
+  private dob: string;
+  private address: Address;
   private block: boolean;
-  private createdAt?: Date;
-  private updatedAt?: Date;
 
-  constructor(data: IUserData) {
-    this.id = data.id || null;
-    this.phone = data.phone;
-    this.pass = data.pass;
-    this.status = data.status !== undefined ? data.status : true;
-    this.refId = data.refId || null;
-    this.email = data.email;
-    this.dob = data.dob;
-    this.address = data.address || {};
-    this.block = data.block !== undefined ? data.block : false;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
+  public getPhoneNumber(): string {
+    return this.phoneNumber;
   }
 
-  public getId(): string | null {
-    return this.id;
+  public setPhoneNumber(phoneNumber: string): void {
+    this.phoneNumber = phoneNumber;
   }
 
-  public getPhone(): string {
-    return this.phone;
+  public getPassword(): string {
+    return this.password;
   }
 
-  public getPass(): string | undefined {
-    return this.pass;
-  }
-
-  public getStatus(): boolean {
-    return this.status;
-  }
+  public setPassword(password: string): void {
+    this.password = password;
+  } 
 
   public getRefId(): string | null {
     return this.refId;
+  }
+
+  public setRefId(refId: string | null): void {
+    this.refId = refId;
   }
 
   public getEmail(): string | undefined {
     return this.email;
   }
 
+  public setEmail(email: string): void {
+    this.email = email;
+  }
+
   public getDob(): string | undefined {
     return this.dob;
   }
 
-  public getAddress(): { city?: string; district?: string; state?: string; country?: string } {
+  public setDob(dob: string): void {
+    this.dob = dob;
+  }
+
+  public getAddress(): Address {
     return this.address;
+  }
+
+  public setAddress(address: Address): void {
+    this.address = address;
+  }
+
+  public isBlock(): boolean {
+    return this.block;
   }
 
   public getBlock(): boolean {
     return this.block;
   }
 
-  public getCreatedAt(): Date | undefined {
-    return this.createdAt;
-  }
-
-  public getUpdatedAt(): Date | undefined {
-    return this.updatedAt;
-  }
-
   public setBlock(block: boolean): void {
     this.block = block;
-  }
-
-  public setStatus(status: boolean): void {
-    this.status = status;
   }
 }
