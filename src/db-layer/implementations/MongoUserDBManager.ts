@@ -1,10 +1,21 @@
 import { IUserDBManager } from '../interfaces/IUserDBManager';
-import { UserSchema, UserDetailsSchema, IUserDoc, IUserDetailsDoc } from '../schemas/UserSchema';
+import { DBUserSchema, DBUserDetailsSchema } from '../models/DBUserSchema';
 import { User } from '../../service-layer/models/User';
+import mongoose from 'mongoose';
+import { DBConstants } from '../models/DBConstant';
 
 export class MongoUserDBManager implements IUserDBManager {
+
+  private DBUserDetails: any;
+  private DBUsers: any;
+
+  constructor() {
+    this.DBUserDetails = mongoose.model(DBConstants.UserDetailsCollection, DBUserDetailsSchema);
+    this.DBUsers = mongoose.model(DBConstants.UsersCollection, DBUserSchema);
+  }
+
   public async save(userData: { phone: string; pass: string }, detailsData: any): Promise<User> {
-    const detailsDoc = await UserDetailsSchema.create({
+    const detailsDoc = await this.DBUserDetails.create({
       email: detailsData.email,
       DOB: detailsData.dob,
       address: {
@@ -15,7 +26,7 @@ export class MongoUserDBManager implements IUserDBManager {
       },
     });
 
-    const userDoc = await UserSchema.create({
+    const userDoc = await this.DBUsers.create({
       phone_no: userData.phone,
       pass: userData.pass,
       status: true,
@@ -26,12 +37,12 @@ export class MongoUserDBManager implements IUserDBManager {
   }
 
   public async findByPhone(phone: string): Promise<User | null> {
-    const doc = await UserSchema.findOne({ phone_no: phone }).lean();
+    const doc = await this.DBUsers.findOne({ phone_no: phone }).lean();
     return doc ? this.toModel(doc as any) : null;
   }
 
   public async findWithDetailsByPhone(phone: string): Promise<User[]> {
-    const docs = await UserSchema.aggregate([
+    const docs = await this.DBUsers.aggregate([
       { $match: { phone_no: phone } },
       {
         $lookup: {
@@ -46,11 +57,11 @@ export class MongoUserDBManager implements IUserDBManager {
   }
 
   public async findDetailsById(id: string): Promise<any> {
-    return await UserDetailsSchema.findById(id).lean();
+    return await this.DBUserDetails.findById(id).lean();
   }
 
   public async findAllActive(): Promise<User[]> {
-    const docs = await UserSchema.aggregate([
+    const docs = await this.DBUsers.aggregate([
       { $match: { status: true } },
       {
         $lookup: {
@@ -65,11 +76,11 @@ export class MongoUserDBManager implements IUserDBManager {
   }
 
   public async updateStatus(refId: string, status: boolean): Promise<any> {
-    return await UserSchema.updateOne({ ref_id: refId }, { status });
+    return await this.DBUsers.updateOne({ ref_id: refId }, { status });
   }
 
   public async updateBlock(id: string, isBlocked: boolean): Promise<any> {
-    return await UserDetailsSchema.updateOne({ _id: id }, { block: isBlocked });
+    return await this.DBUserDetails.updateOne({ _id: id }, { block: isBlocked });
   }
 
   public async updateUserAndDetails(
@@ -79,10 +90,10 @@ export class MongoUserDBManager implements IUserDBManager {
     userFields: Record<string, any>
   ): Promise<void> {
     if (Object.keys(userDetailsFields).length > 0) {
-      await UserDetailsSchema.updateOne({ _id: refId }, { $set: userDetailsFields });
+      await this.DBUserDetails.updateOne({ _id: refId }, { $set: userDetailsFields });
     }
     if (Object.keys(userFields).length > 0) {
-      await UserSchema.updateOne(filter, { $set: userFields });
+      await this.DBUsers.updateOne(filter, { $set: userFields });
     }
   }
 
@@ -96,8 +107,8 @@ export class MongoUserDBManager implements IUserDBManager {
       refId: userDoc.ref_id
         ? userDoc.ref_id.toString()
         : details._id
-        ? details._id.toString()
-        : null,
+          ? details._id.toString()
+          : null,
       email: details.email,
       dob: details.DOB,
       address: details.address || {},
