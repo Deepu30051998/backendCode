@@ -1,8 +1,9 @@
-const { UserSchema, UserDetailsSchema } = require("../schemas/UserSchema");
-const { User } = require("../../service-layer/models/User");
+import { IUserDBManager } from '../interfaces/IUserDBManager';
+import { UserSchema, UserDetailsSchema, IUserDoc, IUserDetailsDoc } from '../schemas/UserSchema';
+import { User } from '../../service-layer/models/User';
 
-class MongoUserDBManager {
-  async save(userData, detailsData) {
+export class MongoUserDBManager implements IUserDBManager {
+  public async save(userData: { phone: string; pass: string }, detailsData: any): Promise<User> {
     const detailsDoc = await UserDetailsSchema.create({
       email: detailsData.email,
       DOB: detailsData.dob,
@@ -21,57 +22,62 @@ class MongoUserDBManager {
       ref_id: detailsDoc._id,
     });
 
-    return this.#toModel(userDoc, detailsDoc);
+    return this.toModel(userDoc.toObject(), detailsDoc.toObject());
   }
 
-  async findByPhone(phone) {
+  public async findByPhone(phone: string): Promise<User | null> {
     const doc = await UserSchema.findOne({ phone_no: phone }).lean();
-    return doc ? this.#toModel(doc) : null;
+    return doc ? this.toModel(doc as any) : null;
   }
 
-  async findWithDetailsByPhone(phone) {
+  public async findWithDetailsByPhone(phone: string): Promise<User[]> {
     const docs = await UserSchema.aggregate([
       { $match: { phone_no: phone } },
       {
         $lookup: {
-          from: "userdetails",
-          localField: "ref_id",
-          foreignField: "_id",
-          as: "order",
+          from: 'userdetails',
+          localField: 'ref_id',
+          foreignField: '_id',
+          as: 'order',
         },
       },
     ]);
-    return docs.map((d) => this.#toModel(d));
+    return docs.map((d) => this.toModel(d));
   }
 
-  async findDetailsById(id) {
+  public async findDetailsById(id: string): Promise<any> {
     return await UserDetailsSchema.findById(id).lean();
   }
 
-  async findAllActive() {
+  public async findAllActive(): Promise<User[]> {
     const docs = await UserSchema.aggregate([
       { $match: { status: true } },
       {
         $lookup: {
-          from: "userdetails",
-          localField: "ref_id",
-          foreignField: "_id",
-          as: "order",
+          from: 'userdetails',
+          localField: 'ref_id',
+          foreignField: '_id',
+          as: 'order',
         },
       },
     ]);
-    return docs.map((d) => this.#toModel(d));
+    return docs.map((d) => this.toModel(d));
   }
 
-  async updateStatus(refId, status) {
-    await UserSchema.updateOne({ ref_id: refId }, { status });
+  public async updateStatus(refId: string, status: boolean): Promise<any> {
+    return await UserSchema.updateOne({ ref_id: refId }, { status });
   }
 
-  async updateBlock(id, isBlocked) {
-    await UserDetailsSchema.updateOne({ _id: id }, { block: isBlocked });
+  public async updateBlock(id: string, isBlocked: boolean): Promise<any> {
+    return await UserDetailsSchema.updateOne({ _id: id }, { block: isBlocked });
   }
 
-  async updateUserAndDetails(refId, userDetailsFields, filter, userFields) {
+  public async updateUserAndDetails(
+    refId: string,
+    userDetailsFields: Record<string, any>,
+    filter: Record<string, any>,
+    userFields: Record<string, any>
+  ): Promise<void> {
     if (Object.keys(userDetailsFields).length > 0) {
       await UserDetailsSchema.updateOne({ _id: refId }, { $set: userDetailsFields });
     }
@@ -80,7 +86,7 @@ class MongoUserDBManager {
     }
   }
 
-  #toModel(userDoc, detailsDoc = null) {
+  private toModel(userDoc: any, detailsDoc: any = null): User {
     const details = detailsDoc || (userDoc.order && userDoc.order[0]) || {};
     return new User({
       id: userDoc._id ? userDoc._id.toString() : null,
@@ -101,6 +107,3 @@ class MongoUserDBManager {
     });
   }
 }
-
-module.exports = { MongoUserDBManager };
-
