@@ -1,19 +1,8 @@
-import {
-  Body,
-  Delete,
-  Get,
-  JsonController,
-  Param,
-  Post,
-  Put,
-  QueryParam,
-} from 'routing-controllers';
+import { Body, Delete, Get, JsonController, Param, Post, Put, QueryParam } from 'routing-controllers';
 import { Constants } from '../../common/utils/Constants';
 import { ServiceFactory } from '../../service-layer/ServiceFactory';
 import { IUserService } from '../../service-layer/interfaces/IUserService';
-import { CreateUserRequest } from '../models/request/CreateUserRequest';
-import { UpdateUserRequest } from '../models/request/UpdateUserRequest';
-import { LoginRequest } from '../models/request/LoginRequest';
+import { UserRequestModel } from '../models/request/UserRequestModel';
 import { UserResponse } from '../models/response/UserResponse';
 import { ApiResponse } from '../models/response/ApiResponse';
 import { Config } from '../../config/Config';
@@ -28,13 +17,13 @@ export class UserController {
   }
 
   @Post('/register')
-  public async register(@Body({ required: true }) req: CreateUserRequest): Promise<ApiResponse<UserResponse>> {
+  public async register(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<UserResponse>> {
     const user = await this.userService.registerUser(req);
     return ApiResponse.ok(new UserResponse(user), 'User registered successfully');
   }
 
   @Post('/login')
-  public async login(@Body({ required: true }) req: LoginRequest): Promise<ApiResponse<{ token: string; user: UserResponse }>> {
+  public async login(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<{ token: string; user: UserResponse }>> {
     const user = await this.userService.authenticate(req.phone, req.pass);
     if (!user) {
       return ApiResponse.fail('Invalid phone number or password') as any;
@@ -69,7 +58,7 @@ export class UserController {
   }
 
   @Put('/')
-  public async updateUser(@Body({ required: true }) req: UpdateUserRequest): Promise<ApiResponse<boolean>> {
+  public async updateUser(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<boolean>> {
     const result = await this.userService.updateUser(req);
     if (!result) {
       return ApiResponse.fail('User not found or update failed') as any;
