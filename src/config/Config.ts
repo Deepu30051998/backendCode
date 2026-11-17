@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { development } from './development';
 import { production } from './production';
 
@@ -33,7 +34,7 @@ export class Config {
     const data: IEnvironmentConfig = env === 'production' ? production : development;
 
     this.port = parseInt(process.env.PORT || `${data.app.port}` || '7500', 10);
-    this.mongoUrl = process.env.MONGO_URL || data.mongodb.url;
+    this.mongoUrl = process.env.MONGO_URL || process.env.MONGO_URI || data.mongodb.url;
     this.jwtSecret = process.env.JWT_SECRET || data.authentication.secretKey;
     this.jwtExpirySeconds = data.authentication.tokenExpiryInSecs || 43200;
   }
