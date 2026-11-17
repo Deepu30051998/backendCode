@@ -1,3 +1,4 @@
+import { ObjectStatus } from 'service-layer/models/ObjectStatus';
 import { User } from '../../../service-layer/models/User';
 
 export class UserResponse {
@@ -24,9 +25,9 @@ export class UserResponse {
     if (!user) return;
     this.id = user.getId();
     this._id = user.getRefId() || user.getId();
-    this.phone = user.getPhone();
-    this.phone_no = user.getPhone();
-    this.status = user.getStatus();
+    this.phone = user.getPhoneNumber();
+    this.phone_no = user.getPhoneNumber();
+    this.status = user.getStatus() == ObjectStatus.Active ? true : false;
     this.refId = user.getRefId();
     this.email = user.getEmail();
     this.dob = user.getDob();
@@ -34,16 +35,16 @@ export class UserResponse {
     const addr = user.getAddress();
     this.address = addr
       ? {
-          city: typeof addr.getCity === 'function' ? addr.getCity() : (addr as any).city,
-          district: typeof addr.getDistrict === 'function' ? addr.getDistrict() : (addr as any).district,
-          state: typeof addr.getState === 'function' ? addr.getState() : (addr as any).state,
-          country: typeof addr.getCountry === 'function' ? addr.getCountry() : (addr as any).country,
-        }
+        city: typeof addr.getCity === 'function' ? addr.getCity() : (addr as any).city,
+        district: typeof addr.getDistrict === 'function' ? addr.getDistrict() : (addr as any).district,
+        state: typeof addr.getState === 'function' ? addr.getState() : (addr as any).state,
+        country: typeof addr.getCountry === 'function' ? addr.getCountry() : (addr as any).country,
+      }
       : {};
 
     this.block = user.getBlock();
     this.createdAt = user.getCreatedAt();
-    this.updatedAt = user.getUpdatedAt();
+    this.updatedAt = user.getLastModifiedAt();
 
     // Backward-compatibility for EJS views
     this.order = [
