@@ -31,7 +31,7 @@ export class UserController {
 
     const payload = {
       id: user.getId(),
-      phone: user.getPhone(),
+      phone: user.getPhoneNumber(),
       exp: Math.floor(Date.now() / 1000) + Config.getInstance().getJwtExpiry(),
     };
     const token = jwt.encode(payload, Config.getInstance().getJwtSecret());
