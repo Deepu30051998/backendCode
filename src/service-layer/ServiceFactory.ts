@@ -1,13 +1,13 @@
-import { IUserService } from './interfaces/IUserService';
+import { IUserService } from './interfaces/IUserService'
 
 export class ServiceFactory {
-  private static userService: IUserService;
+  private static userService: IUserService
 
   public static getUserService(): IUserService {
-    return this.userService;
+    return this.userService
   }
 
-  public static setUserService(svc: IUserService): void {
-    this.userService = svc;
+  public static setUserService(userService: IUserService): void {
+    this.userService = userService
   }
 }

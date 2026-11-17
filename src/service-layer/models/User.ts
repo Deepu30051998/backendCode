@@ -1,110 +1,110 @@
-import { ServiceObject } from "./ServiceObject";
+import { ServiceObject } from "./ServiceObject"
 
 export class Address {
-  private city: string;
-  private district: string;
-  private state: string;
-  private country: string;
+  private city: string
+  private district: string
+  private state: string
+  private country: string
 
   public getCity(): string {
-    return this.city;
+    return this.city
   }
 
   public setCity(city: string): void {
-    this.city = city;
+    this.city = city
   }
 
   public getDistrict(): string {
-    return this.district;
+    return this.district
   }
 
   public setDistrict(district: string): void {
-    this.district = district;
+    this.district = district
   }
 
   public getState(): string {
-    return this.state;
+    return this.state
   }
 
   public setState(state: string): void {
-    this.state = state;
+    this.state = state
   }
 
   public getCountry(): string {
-    return this.country;
+    return this.country
   }
 
   public setCountry(country: string): void {
-    this.country = country;
+    this.country = country
   }
 }
 
 export class User extends ServiceObject{
-  private phoneNumber: string;
-  private password: string;
-  private refId: string;
-  private email: string;
-  private dob: string;
-  private address: Address;
-  private block: boolean;
+  private phoneNumber: string
+  private password: string
+  private refId: string
+  private email: string
+  private dob: string
+  private address: Address
+  private block: boolean
 
   public getPhoneNumber(): string {
-    return this.phoneNumber;
+    return this.phoneNumber
   }
 
   public setPhoneNumber(phoneNumber: string): void {
-    this.phoneNumber = phoneNumber;
+    this.phoneNumber = phoneNumber
   }
 
   public getPassword(): string {
-    return this.password;
+    return this.password
   }
 
   public setPassword(password: string): void {
-    this.password = password;
+    this.password = password
   } 
 
   public getRefId(): string | null {
-    return this.refId;
+    return this.refId
   }
 
   public setRefId(refId: string | null): void {
-    this.refId = refId;
+    this.refId = refId
   }
 
   public getEmail(): string | undefined {
-    return this.email;
+    return this.email
   }
 
   public setEmail(email: string): void {
-    this.email = email;
+    this.email = email
   }
 
   public getDob(): string | undefined {
-    return this.dob;
+    return this.dob
   }
 
   public setDob(dob: string): void {
-    this.dob = dob;
+    this.dob = dob
   }
 
   public getAddress(): Address {
-    return this.address;
+    return this.address
   }
 
   public setAddress(address: Address): void {
-    this.address = address;
+    this.address = address
   }
 
   public isBlock(): boolean {
-    return this.block;
+    return this.block
   }
 
   public getBlock(): boolean {
-    return this.block;
+    return this.block
   }
 
   public setBlock(block: boolean): void {
-    this.block = block;
+    this.block = block
   }
 }
