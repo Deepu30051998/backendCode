@@ -4,9 +4,9 @@
   "description": "User Management System following PMS 3-Layer Architecture",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
+    "dev": "tsc && concurrently \"tsc -w\" \"nodemon\"",
     "build": "tsc",
-    "prod": "nodemon ./dist/server.js",
+    "prod": "node dist/server.js",
     "start": "npm run build && npm run prod",
     "format": "prettier --write \"src/**/*.{ts,js,json}\""
   },
