@@ -1,4 +1,3 @@
 export class DBConstants {
-      public static readonly UsersCollection: string = "users"
-      public static readonly UserDetailsCollection: string = "userdetails"
+  public static readonly UsersCollection: string = "users"
 }

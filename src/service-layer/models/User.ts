@@ -39,14 +39,12 @@ export class Address {
   }
 }
 
-export class User extends ServiceObject{
+export class User extends ServiceObject {
   private phoneNumber: string
   private password: string
-  private refId: string
   private email: string
   private dob: string
   private address: Address
-  private block: boolean
 
   public getPhoneNumber(): string {
     return this.phoneNumber
@@ -62,14 +60,6 @@ export class User extends ServiceObject{
 
   public setPassword(password: string): void {
     this.password = password
-  } 
-
-  public getRefId(): string | null {
-    return this.refId
-  }
-
-  public setRefId(refId: string | null): void {
-    this.refId = refId
   }
 
   public getEmail(): string | undefined {
@@ -94,17 +84,5 @@ export class User extends ServiceObject{
 
   public setAddress(address: Address): void {
     this.address = address
-  }
-
-  public isBlock(): boolean {
-    return this.block
-  }
-
-  public getBlock(): boolean {
-    return this.block
-  }
-
-  public setBlock(block: boolean): void {
-    this.block = block
   }
 }
