@@ -2,7 +2,7 @@ import { IUserService } from '../interfaces/IUserService'
 import { DataAccessLayerFactory } from '../../db-layer/DataAccessLayerFactory'
 import { IUserDBManager } from '../../db-layer/interfaces/IUserDBManager'
 import { User, Address } from '../models/User'
-import { ObjectStatus } from 'service-layer/models/ObjectStatus'
+import { ObjectStatus } from '../../service-layer/models/ObjectStatus'
 
 export class UserService implements IUserService {
   private DBUsers: IUserDBManager

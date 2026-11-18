@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { Address, User } from '../../service-layer/models/User'
-import { ServiceObject } from "service-layer/models/ServiceObject";
-import { ObjectStatus } from "service-layer/models/ObjectStatus";
+import { ServiceObject } from "../../service-layer/models/ServiceObject";
+import { ObjectStatus } from "../../service-layer/models/ObjectStatus";
 
 export class Utility {
 
