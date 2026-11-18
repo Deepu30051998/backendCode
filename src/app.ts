@@ -15,6 +15,7 @@ import { UserController } from './web-layer/controllers/UserController'
 import { mountWebRoutes } from './web-layer/controllers/WebViewController'
 import { CustomErrorHandler } from './web-layer/middlewares/CustomErrorHandler'
 import { AuthorizationChecker } from './web-layer/middlewares/AuthorizationChecker'
+import { Constants } from './common/utils/Constants'
 
 export class App {
   public app: express.Application
@@ -44,13 +45,13 @@ export class App {
     const authChecker = new AuthorizationChecker()
     this.routingControllersOptions = {
       cors: true,
-      routePrefix: '/',
+      routePrefix: Constants.ROUTER_PREFIX,
       controllers: [UserController],
       middlewares: [CustomErrorHandler],
       defaultErrorHandler: false,
       validation: {
-        whitelist: true,
-        skipMissingProperties: false,
+        whitelist: false,
+        skipMissingProperties: true,
       },
       authorizationChecker: authChecker.check.bind(authChecker),
       currentUserChecker: authChecker.getCurrentUserClaims.bind(authChecker),
