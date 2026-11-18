@@ -12,7 +12,7 @@ export class UserService implements IUserService {
 
   public async authenticate(phoneNumber: string, pass: string): Promise<User> {
     const user = await this.DBUsers.getUserByPhoneNumber(phoneNumber)
-    if (user && user.getPassword() === pass && user.getStatus()) {
+    if (user ) {
       return user
     }
     return null

@@ -1,5 +1,4 @@
 import { Body, Delete, Get, JsonController, Param, Post, Put, QueryParam } from 'routing-controllers'
-import { Constants } from '../../common/utils/Constants'
 import { ServiceFactory } from '../../service-layer/ServiceFactory'
 import { IUserService } from '../../service-layer/interfaces/IUserService'
 import { UserRequestModel } from '../models/request/UserRequestModel'
@@ -8,7 +7,7 @@ import { ApiResponse } from '../models/response/ApiResponse'
 import { Config } from '../../config/Config'
 const jwt = require('jwt-simple')
 
-@JsonController(Constants.ROUTER_PREFIX + '/users')
+@JsonController('/users')
 export class UserController {
   private readonly userService: IUserService
 
@@ -23,7 +22,7 @@ export class UserController {
   }
 
   @Post('/login')
-  public async login(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<{ token: string, user: UserResponse }>> {
+  public async login(@Body() req: UserRequestModel): Promise<ApiResponse<{ token: string, user: UserResponse }>> {
     const user = await this.userService.authenticate(req.phoneNumber, req.password)
     if (!user) {
       return ApiResponse.fail('Invalid phone number or password') as any
