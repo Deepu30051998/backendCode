@@ -4,7 +4,7 @@ import { User } from '../../service-layer/models/User'
 import mongoose from 'mongoose'
 import { DBConstants } from '../models/DBConstant'
 import { Utility } from '../../common/utils/Utility'
-import { ObjectStatus } from 'service-layer/models/ObjectStatus'
+import { ObjectStatus } from '../../service-layer/models/ObjectStatus'
 
 export class MongoUserDBManager implements IUserDBManager {
   private DBUserDetails: any

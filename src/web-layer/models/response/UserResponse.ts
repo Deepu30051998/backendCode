@@ -1,4 +1,4 @@
-import { ObjectStatus } from 'service-layer/models/ObjectStatus'
+import { ObjectStatus } from '../../../service-layer/models/ObjectStatus'
 import { User } from '../../../service-layer/models/User'
 
 export class UserResponse {
