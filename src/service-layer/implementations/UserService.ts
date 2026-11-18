@@ -11,6 +11,22 @@ export class UserService implements IUserService {
     this.DBUsers = DataAccessLayerFactory.getUserDBManager()
   }
 
+  public async createUser(user: User): Promise<User> {
+    return await this.DBUsers.createUser(user)
+  }
+
+  public async updateUser(user: User): Promise<boolean> {
+    return await this.DBUsers.updateUser(user)
+  }
+
+  public async deleteUser(id: string): Promise<boolean> {
+    return await this.DBUsers.updateUserStatus(id, ObjectStatus.Inactive)
+  }
+
+  public async toggleUser(id: string, enable: boolean): Promise<boolean> {
+    return await this.DBUsers.toggleUser(id, enable)
+  }
+
   public async verifyUser(phoneNumber: string, password: string): Promise<User> {
     return await this.DBUsers.verifyUser(phoneNumber, password)
   }
@@ -25,21 +41,5 @@ export class UserService implements IUserService {
 
   public async getAllUsers(): Promise<User[]> {
     return await this.DBUsers.getActiveUsers();
-  }
-
-  public async createUser(user: User): Promise<User> {
-    return await this.DBUsers.createUser(user)
-  }
-
-  public async updateUser(user:User): Promise<boolean> {  
-    return await this.DBUsers.updateUser(user)
-  }
-
-  public async deleteUser(id: string): Promise<boolean> {
-    return await this.DBUsers.updateUserStatus(id, ObjectStatus.Inactive)
-  }
-
-  public async toggleUser(id: string,enable:boolean): Promise<boolean> {
-    return await this.DBUsers.toggleUser(id, enable)
   }
 }

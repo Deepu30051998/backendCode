@@ -47,16 +47,6 @@ export class UserController {
     return { token, user: verifiedUser }
   }
 
-  @Get('/list')
-  public async getAllUsers(): Promise<User[]> {
-    return await this.userService.getAllUsers()
-  }
-
-  @Get('/getUsersByPhoneNumber')
-  public async getUsersByPhoneNumber(@QueryParam('phoneNumber') phoneNumber: string): Promise<User[]> {
-    return await this.userService.getUsersByPhoneNumber(phoneNumber)
-  }
-
   @Post('/update')
   public async updateUser(@Body() req: UserRequestModel): Promise<boolean> {
     if (!Utility.isValidMongoId(req.id)) {
@@ -65,16 +55,26 @@ export class UserController {
     return await this.userService.updateUser(Utility.getUser(req))
   }
 
-  @Get('/delete/:id')
-  public async deleteUser(@Param('id') id: string): Promise<boolean> {
-    return await this.userService.deleteUser(id)
-  }
-
   @Post('/toggle')
   public async toggleUser(@Body() req: UserRequestModel): Promise<boolean> {
     if (!Utility.isValidMongoId(req.id)) {
       throw new Error('Invalid user id')
     }
     return await this.userService.toggleUser(req.id, req.enable)
+  }
+
+  @Get('/delete/:id')
+  public async deleteUser(@Param('id') id: string): Promise<boolean> {
+    return await this.userService.deleteUser(id)
+  }
+
+  @Get('/list')
+  public async getAllUsers(): Promise<User[]> {
+    return await this.userService.getAllUsers()
+  }
+
+  @Get('/getUsersByPhoneNumber')
+  public async getUsersByPhoneNumber(@QueryParam('phoneNumber') phoneNumber: string): Promise<User[]> {
+    return await this.userService.getUsersByPhoneNumber(phoneNumber)
   }
 }

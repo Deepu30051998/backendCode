@@ -28,21 +28,6 @@ export class MongoUserDBManager implements IUserDBManager {
     return ret ? Utility.getUser(ret) : null
   }
 
-  public async getUsersByPhoneNumber(phoneNumber: string): Promise<User[]> {
-    const users = await this.DBUsers.find({ phoneNumber })
-    return Utility.getListOfItems(users, Utility.getUser)
-  }
-
-  public async getUserById(id: string): Promise<User> {
-    const ret = await this.DBUsers.findOne({ _id: new mongoose.Types.ObjectId(id) })
-    return ret ? Utility.getUser(ret) : null
-  }
-
-  public async getActiveUsers(): Promise<User[]> {
-    const users = await this.DBUsers.find({ status: ObjectStatus.Active })
-    return Utility.getListOfItems(users, Utility.getUser)
-  }
-
   public async updateUserStatus(id: string, status: string): Promise<boolean> {
     const ret = await this.DBUsers.updateOne({ _id: new mongoose.Types.ObjectId(id) },
       { status }
@@ -80,5 +65,20 @@ export class MongoUserDBManager implements IUserDBManager {
       { $set: updateQry }
     )
     return ret.matchedCount > 0
+  }
+
+   public async getUsersByPhoneNumber(phoneNumber: string): Promise<User[]> {
+    const users = await this.DBUsers.find({ phoneNumber })
+    return Utility.getListOfItems(users, Utility.getUser)
+  }
+
+  public async getUserById(id: string): Promise<User> {
+    const ret = await this.DBUsers.findOne({ _id: new mongoose.Types.ObjectId(id) })
+    return ret ? Utility.getUser(ret) : null
+  }
+
+  public async getActiveUsers(): Promise<User[]> {
+    const users = await this.DBUsers.find({ status: ObjectStatus.Active })
+    return Utility.getListOfItems(users, Utility.getUser)
   }
 }
