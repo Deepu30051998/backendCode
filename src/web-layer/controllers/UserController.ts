@@ -1,10 +1,10 @@
-import { Body, Delete, Get, JsonController, Param, Post, Put, QueryParam } from 'routing-controllers'
+import { Body, Get, JsonController, Param, Post, QueryParam } from 'routing-controllers'
 import { ServiceFactory } from '../../service-layer/ServiceFactory'
 import { IUserService } from '../../service-layer/interfaces/IUserService'
 import { UserRequestModel } from '../models/request/UserRequestModel'
-import { UserResponse } from '../models/response/UserResponse'
-import { ApiResponse } from '../models/response/ApiResponse'
 import { Config } from '../../config/Config'
+import { User } from '../../service-layer/models/User'
+import { Utility } from '../../common/utils/Utility'
 const jwt = require('jwt-simple')
 
 @JsonController('/users')
@@ -15,68 +15,66 @@ export class UserController {
     this.userService = ServiceFactory.getUserService()
   }
 
-  @Post('/register')
-  public async register(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<UserResponse>> {
-    const user = await this.userService.registerUser(req)
-    return ApiResponse.ok(new UserResponse(user), 'User registered successfully')
+  @Post('/add')
+  public async addUser(@Body() req: UserRequestModel): Promise<User> {
+    if (!req.phoneNumber) {
+      throw new Error('Invalid phone number')
+    }
+    if (!req.password) {
+      throw new Error('Invalid password')
+    }
+    return await this.userService.createUser(Utility.getUser(req))
   }
 
   @Post('/login')
-  public async login(@Body() req: UserRequestModel): Promise<ApiResponse<{ token: string, user: UserResponse }>> {
-    const user = await this.userService.authenticate(req.phoneNumber, req.password)
-    if (!user) {
-      return ApiResponse.fail('Invalid phone number or password') as any
+  public async login(@Body() req: UserRequestModel): Promise<{ token: string; user: User }> {
+    if (!req.phoneNumber) {
+      throw new Error('Invalid phone number')
     }
-
+    if (!req.password) {
+      throw new Error('Invalid password')
+    }
+    const verifiedUser = await this.userService.verifyUser(req.phoneNumber, req.password)
+    if (!verifiedUser) {
+      throw new Error('Invalid phone number or password')
+    }
     const payload = {
-      id: user.getId(),
-      phone: user.getPhoneNumber(),
+      id: verifiedUser.getId(),
+      phone: verifiedUser.getPhoneNumber(),
       exp: Math.floor(Date.now() / 1000) + Config.getInstance().getJwtExpiry(),
     }
     const token = jwt.encode(payload, Config.getInstance().getJwtSecret())
-
-    return ApiResponse.ok(
-      {
-        token,
-        user: new UserResponse(user),
-      },
-      'Login successful'
-    )
+    return { token, user: verifiedUser }
   }
 
-  @Get('/')
-  public async getAllUsers(): Promise<ApiResponse<UserResponse[]>> {
-    const users = await this.userService.getAllUsers()
-    return ApiResponse.ok(users.map((u) => new UserResponse(u)))
-  }
-
-  @Get('/by-phone')
-  public async getUserByPhone(@QueryParam('phone') phone: string): Promise<ApiResponse<UserResponse[]>> {
-    const users = await this.userService.getUserWithDetails(phone)
-    return ApiResponse.ok(users.map((u) => new UserResponse(u)))
-  }
-
-  @Put('/')
-  public async updateUser(@Body({ required: true }) req: UserRequestModel): Promise<ApiResponse<boolean>> {
-    const result = await this.userService.updateUser(req)
-    if (!result) {
-      return ApiResponse.fail('User not found or update failed') as any
+  @Post('/update')
+  public async updateUser(@Body() req: UserRequestModel): Promise<boolean> {
+    if (!Utility.isValidMongoId(req.id)) {
+      throw new Error('Invalid user id')
     }
-    return ApiResponse.ok(true, 'User updated successfully')
+    return await this.userService.updateUser(Utility.getUser(req))
   }
 
-  @Delete('/:refId')
-  public async deleteUser(@Param('refId') refId: string): Promise<ApiResponse<boolean>> {
-    await this.userService.deleteUser(refId)
-    return ApiResponse.ok(true, 'User deleted successfully')
-  }
-
-  @Post('/toggle-block/:refId')
-  public async toggleBlockUser(@Param('refId') refId: string): Promise<ApiResponse<{ isBlocked: boolean }>> {
-    const newState = await this.userService.toggleBlockUser(refId)
-    if (newState === null) {
-      return ApiResponse.fail('User details not found') as any
+  @Post('/toggle')
+  public async toggleUser(@Body() req: UserRequestModel): Promise<boolean> {
+    if (!Utility.isValidMongoId(req.id)) {
+      throw new Error('Invalid user id')
     }
-    return ApiResponse.ok({ isBlocked: newState }, 'User block state toggled')
+    return await this.userService.toggleUser(req.id, req.enable)
+  }
+
+  @Get('/delete/:id')
+  public async deleteUser(@Param('id') id: string): Promise<boolean> {
+    return await this.userService.deleteUser(id)
+  }
+
+  @Get('/list')
+  public async getAllUsers(): Promise<User[]> {
+    return await this.userService.getAllUsers()
+  }
+
+  @Get('/getUsersByPhoneNumber')
+  public async getUsersByPhoneNumber(@QueryParam('phoneNumber') phoneNumber: string): Promise<User[]> {
+    return await this.userService.getUsersByPhoneNumber(phoneNumber)
   }
 }

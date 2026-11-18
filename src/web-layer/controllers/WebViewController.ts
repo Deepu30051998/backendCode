@@ -11,9 +11,9 @@ export function mountWebRoutes(app: Application): void {
 
   app.get('/user', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const phoneNumber = req.query.pnumber as string
-      const password = req.query.password as string
-      const user = await getUserService().authenticate(phoneNumber, password)
+      const phoneNumber = (req.query.pnumber || req.query.phoneNumber) as string
+      const password = (req.query.pass || req.query.password) as string
+      const user = await getUserService().verifyUser(phoneNumber, password)
       if (user) {
         const users = await getUserService().getUserWithDetails(phoneNumber)
         const responses = users.map((u) => new UserResponse(u))
@@ -78,7 +78,7 @@ export function mountWebRoutes(app: Application): void {
 
   app.get('/showByPhoneNo', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const phoneNumber = req.query.phoneNumber_no as string
+      const phoneNumber = (req.query.phone_no || req.query.phoneNumber || req.query.pnumber) as string
       const users = await getUserService().getUserWithDetails(phoneNumber)
       const responses = users.map((u) => new UserResponse(u))
       res.render('usersList', { data: responses })

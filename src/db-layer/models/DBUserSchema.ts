@@ -1,5 +1,4 @@
 import { Schema } from 'mongoose'
-import { DBConstants } from './DBConstant'
 
 export const DBUserSchema = new Schema({
   phoneNumber: {
@@ -11,25 +10,14 @@ export const DBUserSchema = new Schema({
   status: {
     type: String
   },
-  ref_id: {
-    type: Schema.Types.ObjectId,
-    ref: DBConstants.UserDetailsCollection,
-  }
-},
-  {
-    timestamps: true,
-  }
-)
-
-export const DBUserDetailsSchema = new Schema({
-  block: {
-    type: Boolean
-  },
   email: {
     type: String
   },
   dob: {
     type: String
+  },
+  enable: {
+    type: Boolean
   },
   address: {
     city: {
@@ -45,7 +33,13 @@ export const DBUserDetailsSchema = new Schema({
       type: String
     }
   }
-}, { timestamps: true })
+},
+  {
+    timestamps: true,
+  }
+)
+
+
 
 
 
